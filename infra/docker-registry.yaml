@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: regcred
-  namespace: markeble
-type: kubernetes.io/dockerconfigjson
-data:
-  .dockerconfigjson: ewoJImF1dGhzIjogewoJCSJnaGNyLmlvIjogewoJCQkiYXV0aCI6ICJhM1Z6ZFcxaGJtbHVaM0poZERwbmFIQmZUMUJxZG5relZYTnlUVGRvUXpaUU9FOVFUVFZyZG1oQ1pXOVFSMGRrTkdSNWRsWTIiCgkJfSwKCQkiaHR0cHM6Ly9pbmRleC5kb2NrZXIuaW8vdjEvIjogewoJCQkiYXV0aCI6ICJhM1Z6ZFcxaGJtbHVaM0poZERFMk9tdDFjM1Z0WVc1cGJtZHlZWFE9IgoJCX0KCX0KfQ==
