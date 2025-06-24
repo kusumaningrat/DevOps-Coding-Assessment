@@ -1,15 +1,14 @@
 #!/bin/bash
 set -e
 
-# Wait for PostgreSQL to be ready
-until pg_isready -h database -U "$POSTGRES_USER"; do
-  echo "Waiting for PostgreSQL..."
+echo "Waiting for PostgreSQL..."
+until pg_isready -h "$DATABASE_HOST" -U "$POSTGRES_USER"; do
+  echo "PostgreSQL is unavailable - sleeping"
   sleep 2
 done
 
-# Run pending migrations
-echo "Running pending migrations..."
+echo "PostgreSQL is up - running migrations"
 bundle exec rails db:migrate
 
-# Start the app
+echo "Starting Rails server"
 exec "$@"

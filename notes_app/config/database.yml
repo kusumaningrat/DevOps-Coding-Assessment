@@ -3,7 +3,7 @@ default: &default
   encoding: unicode
   username: <%= ENV["POSTGRES_USER"] %>
   password: <%= ENV["POSTGRES_PASSWORD"] %>
-  host: database
+  host: <%= ENV["DATABASE_HOST"] || "database" %>
   pool: 5
 
 development:
