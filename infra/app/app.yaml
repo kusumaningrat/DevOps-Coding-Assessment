@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ruby-backend
+  namespace: markeble
+  labels:
+    app: ruby-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ruby-backend
+  template:
+    metadata:
+      labels:
+        app: ruby-backend
+    spec:
+      imagePullSecrets:
+        - name: regcred
+    spec:
+      containers:
+        - name: ruby-backend
+          image: kusumaningrat16/ruby-backend-markeble:v4
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: RAILS_ENV
+              value: "development"
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: DB_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: DB_PASS
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: DB_NAME
+            - name: DATABASE_HOST
+              value: postgres-service
+          ports:
+            - containerPort: 3000
+              name: http
+          command: ["./bin/rails"]
+          args: ["server", "-b", "0.0.0.0"]
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ruby-backend-service
+  namespace: markeble
+spec:
+  selector:
+    app: ruby-backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: ClusterIP

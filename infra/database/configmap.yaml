@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-mount
+  namespace: markeble
+data:
+  postgres.conf: |
+    max_connections = 100
+    shared_buffers = 128MB

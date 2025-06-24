@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: markeble
+  labels:
+    app: postgres
+spec:
+  serviceName: postgres-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+      tier: db
+  template:
+    metadata:
+      labels:
+        app: postgres
+        tier: db
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: database
+          image: postgres:13.1
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: DB_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: DB_PASS
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: DB_NAME
+          ports:
+            - containerPort: 5432
+              name: database
+          volumeMounts:
+            - name: postgres-persistent-storage
+              mountPath: /var/lib/postgresql/data
+            - name: config-mount
+              mountPath: /etc/postgresql/conf.d
+              readOnly: true
+            - name: secret-mount
+              mountPath: /etc/postgre-cred
+              readOnly: true
+      volumes:
+        - name: secret-mount
+          secret:
+            secretName: postgres-secret
+        - name: config-mount
+          configMap:
+            name: config-mount
+        - name: postgres-persistent-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc
