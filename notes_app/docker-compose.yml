@@ -1,0 +1,42 @@
+version: '3'
+
+networks:
+  makerble-net:
+    external: true
+
+services:
+  database:
+    image: postgres:13.1
+    container_name: database
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    restart: always
+    environment:
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      POSTGRES_DB: $POSTGRES_DB
+      POSTGRES_HOST_AUTH_METHOD: $POSTGRES_HOST_AUTH_METHOD
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/
+    ports:
+      - 5432:5432
+    networks:
+      - makerble-net
+
+  app:
+    image: ruby-backend:v1
+    container_name: ruby-backend
+    restart: always
+    environment:
+      RAILS_ENV: development
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      POSTGRES_DB: $POSTGRES_DB
+      POSTGRES_HOST_AUTH_METHOD: $POSTGRES_HOST_AUTH_METHOD
+    ports:
+    - 3000:3000
+    networks:
+    - makerble-net
