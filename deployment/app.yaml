@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: ruby-backend
-          image: kusumaningrat16/ruby-backend-markeble:latest
+          image: kusumaningrat16/ruby-backend-markeble:20250625052703
           imagePullPolicy: IfNotPresent
           env:
             - name: RAILS_ENV
